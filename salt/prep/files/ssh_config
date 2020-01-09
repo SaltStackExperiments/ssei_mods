@@ -1,0 +1,3 @@
+Host github.com
+    IdentityFile /etc/salt/git_deploy.pem
+    StrictHostKeyChecking no
