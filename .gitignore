@@ -1,4 +1,4 @@
-pillar/deploy.sls
+pillar/deploy.local.sls
 #
 #
 # Byte-compiled / optimized / DLL files
