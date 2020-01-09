@@ -1,5 +1,5 @@
 base:
   '*lab*-master':
-    - deploy
+    - deploy-bk
   'buildbox':
-    - deploy
+    - deploy-bk

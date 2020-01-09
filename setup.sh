@@ -1,4 +1,7 @@
 #!/bin/bash
 
-echo "You really must update the pillar/deploy.sls file to contain an actual private pem key"
-salt-call state.apply prep.bb -ldebug
+PYTHON_EXECUTABLE=$(salt buildbox grains.get pythonexecutable | sed -n 2p | sed 's/^[ \t]*//;s/[ \t]*$//')
+
+$PYTHON_EXECUTABLE update_pem.py
+
+salt buildbox state.apply prep.bb -ldebug
