@@ -34,8 +34,8 @@ Ensure myelb ELB exists - {{x}}:
 
 dns_exists_{{x}}:
   ndc.record_exists:
-    - name: 2020-ssei-toulouse-lab{{x}}
-    - domain: ssei.lx4.us
+    - name: 2020-ssei-toulouse-lab{{x}}.ssei
+    - domain: lx4.us
     - record_type: CNAME
     - elb_name: 2020-ssei-toulouse-lab{{x}}
 
