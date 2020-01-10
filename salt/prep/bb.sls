@@ -5,6 +5,10 @@ packages_i_want:
       - vim
       - tree
 
+pip_packages:
+  pip.installed:
+    - name: pynamecom
+
 manage_vimrc:
   file.managed:
     - name: /root/.vimrc

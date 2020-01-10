@@ -6,7 +6,7 @@ raas_running:
 
 check_http:
   http.query:
-    - name: https://localhost
+    - name: http://localhost
     - verify_ssl: False
     - status: 200
     - match: ss_root

@@ -28,6 +28,12 @@ strict_host_checking:
     - mkdirs: True
     - source: salt://prep/files/ssh_config
 
+licensekey_mods:
+  file.managed:
+    - name: /etc/raas/raas.license
+    - user: raas
+    - group: raas
+    - replace: False
 
 reconfigure_raas:
   file.managed:

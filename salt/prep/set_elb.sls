@@ -26,7 +26,14 @@ Ensure myelb ELB exists - {{x}}:
             keyid: {{ key.keyid }}
             key: {{ key.key }}
 
+# Add dns for this elb
 
+dns_exists_{{x}}:
+  ndc.record_exists:
+    - name: 2020-ssei-toulouse-lab{{x}}
+    - domain: ssei.lx4.us
+    - record_type: CNAME
+    - elb_name: 2020-ssei-toulouse-lab{{x}}
 
 
 {% set id = salt.boto_ec2.get_id(name=instance_name, keyid=key.keyid, key=key.key, region=key.region) %}
