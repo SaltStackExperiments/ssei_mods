@@ -67,12 +67,12 @@ def record_exists(name, domain, record_type, elb_name):
         if update_record:
             if not __opts__['test']:
 
-                updated_record = api.update_record(id=record.id,
-                                                   host=name,
-                                                   type=record_type,
-                                                   answer=answer)
+                api.update_record(id=record.id,
+                                  host=name,
+                                  type=record_type,
+                                  answer=answer)
                 ret['result'] = True
-                ret['changes'] = {'old': record, 'new': updated_record}
+                ret['changes'] = {'old': record, 'new': 'created'}
             else:
                 ret['result'] = 'None'
                 ret['comment'] = 'would have updated the record'
@@ -82,7 +82,7 @@ def record_exists(name, domain, record_type, elb_name):
                                        type=record_type,
                                        answer=answer)
             ret['result'] = True
-            ret['changes'] = {'old': record, 'new': record.id}
+            ret['changes'] = {'old': record, 'new': 'created'}
         else:
             ret['result'] = 'None'
             ret['comment'] = 'would have created the record'
