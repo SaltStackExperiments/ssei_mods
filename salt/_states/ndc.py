@@ -111,11 +111,11 @@ def _get_elb_cname(elb_name):
     # make call to boto_elb to get the cname of the elb <elb_name>
 
     profile = __salt__.pillar.get('sse_scripts_deploy_key:myprofile')
-    elb_info = __salt__.boto_elb.get_attributes(elb_name, profile=profile)
+    elb_info = __salt__.boto_elb.get_elb_config(elb_name, profile=profile)
 
     LOGGER.debug('elb_info %s', elb_info)
 
-    cname = elb_info['CNAME']
+    cname = elb_info['dns_name']
 
     return cname
 
