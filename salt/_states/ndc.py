@@ -131,4 +131,6 @@ def _get_api(domain):
     namecom_token = __salt__.config.get('namecom_token')
 
     auth = Auth(namecom_user, namecom_token)
+    LOGGER.debug('namecom_user: %s', namecom_user)
+    LOGGER.debug('namecom_token: %s', namecom_token)
     return DnsApi(domainName=domain, auth=auth)
