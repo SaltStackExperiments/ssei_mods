@@ -16,8 +16,8 @@ def __virtual__(**kwargs):
     """Determine whether the namecom module has been loaded
 
     """
-    namecom_user = __salt__.config.get('namecom_user')
-    namecom_token = __salt__.config.get('namecom_token')
+    namecom_user = __salt__.pillar.get('namecom_user')
+    namecom_token = __salt__.pillar.get('namecom_token')
     profile = __salt__.pillar.get('sse_scripts_deploy_key:myprofile')
 
     loaded = True
@@ -110,10 +110,8 @@ def _get_elb_cname(elb_name):
 
     # make call to boto_elb to get the cname of the elb <elb_name>
 
-    elb_info = __salt__.boto_elb.get_attributes(elb_name,
-                                                region=None,
-                                                key=None,
-                                                keyid=None)
+    profile = __salt__.pillar.get('sse_scripts_deploy_key:myprofile')
+    elb_info = __salt__.boto_elb.get_attributes(elb_name, profile=profile)
 
     LOGGER.debug('elb_info %s', elb_info)
 
@@ -127,8 +125,8 @@ def _get_api(domain):
     :returns: TODO
 
     """
-    namecom_user = __salt__.config.get('namecom_user')
-    namecom_token = __salt__.config.get('namecom_token')
+    namecom_user = __salt__.pillar.get('namecom_user')
+    namecom_token = __salt__.pillar.get('namecom_token')
 
     auth = Auth(namecom_user, namecom_token)
     LOGGER.debug('namecom_user: %s', namecom_user)
