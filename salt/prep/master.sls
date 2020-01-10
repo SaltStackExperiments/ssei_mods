@@ -28,11 +28,6 @@ strict_host_checking:
     - mkdirs: True
     - source: salt://prep/files/ssh_config
 
-restart_master:
-  cmd.run:
-    - name: salt-call --local service.restart salt-master
-    - onchange:
-      - installer_git_GitPython
 
 reconfigure_raas:
   file.managed:
@@ -40,6 +35,19 @@ reconfigure_raas:
     - user: raas
     - source: salt://prep/files/raas.txt
     - template: jinja
+
+reconfigure_raas.conf:
+  file.managed:
+    - name: /etc/salt/master.d/raas.conf
+    - source: salt://prep/files/raas.conf
+    - template: jinja
+
+restart_master:
+  cmd.run:
+    - name: salt-call --local service.restart salt-master
+    - onchange_any:
+      - installer_git_GitPython
+      - reconfigure_raas.conf
 
 restart_raas_if_necessary:
   service.running:
