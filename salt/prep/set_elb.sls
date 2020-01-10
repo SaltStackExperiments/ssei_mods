@@ -25,6 +25,8 @@ Ensure myelb ELB exists - {{x}}:
             - eu-central-1a
         - security_groups:
           - elb_security_groups
+        - security_group_names:
+          - elb_security_groups
         - profile:
             region: {{ key.region }}
             keyid: {{ key.keyid }}
