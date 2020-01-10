@@ -2,6 +2,10 @@
 # for each node, check that an elb exists, using a certificate, pointing to the
 # instance
 
+pip_packages:
+  pip.installed:
+    - name: pynamecom
+
 # Using a profile from pillars
 {% set key = salt.pillar.get('sse_scripts_deploy_key:myprofile') %}
 {% for x in range(10) %}
