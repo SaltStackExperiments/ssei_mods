@@ -1,3 +1,10 @@
+packages_i_want:
+  pkg.installed:
+    - names:
+      - jq
+      - vim
+      - tree
+
 manage_vimrc:
   file.managed:
     - name: /root/.vimrc
@@ -19,7 +26,7 @@ manage_cloud_profile:
 restart_salt_master:
   cmd.run:
     - name: salt-call service.restart salt-master
-    # - bg: true
+    - bg: true
     - onchanges_any:
       - manage_vimrc
       - manage_etc_master_d_roots_conf

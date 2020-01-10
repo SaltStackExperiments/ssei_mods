@@ -4,9 +4,7 @@ pub_grain_py:
      - source: salt://_grains/aws_pub_ip.py
      - makedirs: True
 
-
 # install git, GitPython
-#
 installer_git_GitPython:
   pkg.installed:
     - names:
@@ -36,6 +34,13 @@ restart_master:
     - onchange:
       - installer_git_GitPython
 
+reconfigure_raas:
+  file.managed:
+    - name: /etc/raas/raas
+    - user: raas
+    - source: salt://prep/files/raas.txt
+    - template: jinja
+
 sync_runnerside:
   cmd.run:
     - name: salt-run saltutil.sync_all
@@ -47,4 +52,5 @@ sync_minions:
     - onchanges_any:
       - pub_grain_py
       - configure_GitFS
+
 
