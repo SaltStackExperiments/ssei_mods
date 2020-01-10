@@ -1,89 +1,94 @@
-#tls_minimum: 1.2
-#tls_crt: /etc/pki/raas/certs/localhost.crt
-#tls_key: /etc/pki/raas/certs/localhost.key
-port: 80
-
-# number of seconds to sleep following a failed attempt
-password_sleep: 2
-
-# authenication backends
-authers:
-  ldap:
-    log_detail: ERROR
-    ssl: {}
-
-
-# path to config directory (can be passed multiple times, order is respected)
-config_dir: []
-
-
-# REQUIRED: fill in your database info
-# - SQLAlchemy options - http://docs.sqlalchemy.org/en/rel_1_0/dialects/index.html
-# - To use the the environment variable DATABASE_URL, set `url: ENV`. For example:
-#   $ export DATABASE_URL=postgres://user:secret@localhost:5432/raas_db_name
-# - To store database credentials in an encrypted file, run "raas save_creds"
-#   after installation.
-# - It is possible, but not recommended practice, to specify database credentials
-#   in plaintext in this section as `username: user` and `password: secret`.
-sql:
-  pool_timeout: 10
-  dialect: postgresql
-  port: 5432
-  pool_size: 10
-  pool_recycle: 3600
-  driver: psycopg2
-  host: localhost
-
-# To use the the environment variable REDIS_URL, set `url: ENV`.
-redis:
-  cache_db: '2'                         # cache database number
-  broker_db: '0'                        # queue database number
-  url: redis://localhost:6379           # Redis URL without '/{database_number}' at the end
-  ssl: {}
-  result_db: '1'                        # result storage database number
-
-# loglevel for logfile logs, options: all, garbage, trace, debug, profile, info, warning, error, critical, quiet
-log_file_loglevel: error
-
-# for development only, always serve the session cookie regardless of the request being http or https
-spa_serve_cookie_always: false
-
-newrelic_enabled: false
-
-# Your customer ID
+# The customer_id sets up the unique namespace in the database
 customer_id: 43cab1f4-de60-4ab1-85b5-1d883c5c5d09
 
-# number of password attempts to start blocking
-password_attempts: 50
+# Define SSL communication settings
+{%- if sse_eapi_ssl_enabled %}
+tls_minimum: 1.2
+tls_crt: /etc/pki/raas/certs/localhost.crt
+tls_key: /etc/pki/raas/certs/localhost.key
+port: 443
+{%- else %}
+port: 80
+{%- endif %}
 
-# SecOps settings
+# The sql backend config, the dialect chooses which sql backend
+# We are only supporting postgres at this time
+sql:
+  dialect: postgresql
+  host: localhost
+  port: 5432
+  driver: psycopg2
+  ssl: True
+
+# Caching Options
+background_workers:
+  combined_process: True
+  max_tasks: 100000
+  max_memory: 1048576
+
+redis:
+  url: redis://localhost:6379
+
+# Time in seconds to begin reporting minions as "lost" if not heard from
+raas_presence_expiration: 3600
+
+# Enable xsrf handling for API
+tornado_xsrf_cookies_enabled: True
+
+# Enable the access audit log, this allows for tracking of all historic
+# access to the raas apis
+audit:
+  enabled: false
+  valid_logins: false
+
+# Logging options
+#log_file_loglevel: debug
+#log_level: debug
+
+# Granular logging options
+#log_granular_levels:
+#  tornado.access: debug
+
 sec:
-  archive_interval: 300                 # The interval in seconds between attempts to archive old assessment/remediation results (ENV Var: SSE_SEC_ARCHIVE_INTERVAL)
-  ingest_custom_override: true          # If True, existing Custom content will be updated otherwise the change will be rejected. (ENV Var: SSE_SEC_INGEST_CUSTOM_OVERRIDE)
-  username: secops                      # Username used to log in to enterprise.saltstack.com to get content (ENV Var: SSE_SEC_USERNAME)
-  ingest_saltstack_override: true       # If True, existing SaltStack content will be updated otherwise the change will be rejected. (ENV Var: SSE_SEC_INGEST_SALTSTACK_OVERRIDE)
-  old_policy_file_lifespan: 2           # The lifespan of old lock policy files in days that will remain in the RAAS file system
-  content_url: https://enterprise.saltstack.com/secops_downloads # URL from which SaltStack Secops content will be downloaded. (ENV Var: SSE_SEC_CONTENT_URL)
-  ingest_on_boot: true                  # If True, SaltStack Secops content will be downloaded and ingested soon after RAAS boot (ENV Var: SSE_SEC_INGEST_ON_BOOT)
-  compile_stats_interval: 10            # Interval in seconds between times that the compile stats will be gathered. (ENV Var: SSE_SEC_COMPILE_STATS_INTERVAL)
-  post_ingest_cleanup: true             # If True, post ingestion the contents of the locke_dir will be cleaned out. (ENV Var: SSE_SEC_POST_INGEST_CLEANUP)
-  download_frequency: 86400             # The frequency in seconds of automated SaltStack Secops content downloads and ingestion. (ENV Var: SSE_SEC_DOWNLOAD_FREQUENCY)
-  content_lock_block_timeout: 120       # This is the maximum time a RAAS head will block on a lock to perform a SaltStack SecOps download and ingestion. (ENV Var: SSE_SEC_CONTENT_LOCK_BLOCK_TIMEOUT)
-  delete_old_policy_files_interval: 86400 # The interval in seconds between times that theold lock policy files in the RAAS file system will be deleted
-  stats_snapshot_interval: 3600         # Interval in seconds between when stats for Secops will be gathered (ENV Var: SSE_SEC_STATS_SNAPSHOT_INTERVAL)
-  download_enabled: true                # If True, SaltStack content downloading is enabled. (should be False for air gapped systems) (ENV Var: SSE_SEC_DOWNLOAD_ENABLED)
-  locke_dir: locke                      # Location where SaltStack content in expanded before ingestion. If the path is relative (no leading slash), then it is relative to the RAAS cache dir (ENV Var: SSE_SEC_LOCKE_DIR)
-  content_lock_timeout: 60              # When multiple RAAS heads are deployed, the SaltStack SecOps content download and ingestion is serialized so only one RAAS head at a time will attempt it.  This is the value for the redis lock timeout. (ENV Var: SSE_SEC_CONTENT_LOCK_TIMEOUT)
+  ingest_override: true
+  locke_dir: locke
+  post_ingest_cleanup: true
+  username: 'secops'
+  content_url: 'https://enterprise.saltstack.com/secops_downloads'
+  download_enabled: true
+  download_frequency: 86400
+  stats_snapshot_interval: 3600
+  ingest_on_boot: true
 
-# Vulnerability Management settings
+# AD/LDAP driver configuration
+#authers:
+#  ldap:
+#    # Allowed log levels
+#    # - OFF       # nothing is logged
+#    # - ERROR     # only exceptions are logged
+#    # - BASIC     # library activity is logged, only operation result is shown
+#    # - PROTOCOL  # LDAPv3 operations are logged, sent requests and received responses are shown
+#    # - NETWORK   # socket activity is logged
+#    # - EXTENDED  # ldap messages are decoded and properly printed
+#    log_level: ERROR
+#    ssl:
+#      # Allowed ciphers values
+#      # - TLSv1.2
+#      # - SSLv23  # Default value selected if not defined when the
+#      #           # AD auth config has use_ssl set to True
+#      ciphers: SSLv23
+#      ca_cert: /path/to/ca_cert.pem
+#      client_key = /path/to/client.key
+#      client_cert = /path/to/client.pem
+
 vman:
-  content_url: https://enterprise.saltstack.com/vman_downloads # URL from which SaltStack Vulnerability Management content will be downloaded. (ENV Var: SSE_VMAN_CONTENT_URL)
-  ingest_on_boot: true                  # If True, SaltStack Vulnerability Management content will be downloaded and ingested soon after RAAS boot (ENV Var: SSE_VMAN_INGEST_ON_BOOT)
+  vman_dir: vman                        # Location where SaltStack content in expanded before ingestion. If the path is relative (no leading slash), then it is relative to the RAAS cache dir (ENV Var: SSE_VMAN_DIR)
+  download_enabled: true                # If True, SaltStack content downloading is enabled. (should be False for air gapped systems) (ENV Var: SSE_VMAN_DOWNLOAD_ENABLED)
+  download_frequency: 86400             # The frequency in seconds of automated SaltStack Vulnerability Management content downloads and ingestion. (ENV Var: SSE_VMAN_DOWNLOAD_FREQUENCY)
   username: vman                        # Username used to log in to enterprise.saltstack.com to get content (ENV Var: SSE_VMAN_USERNAME)
+  content_url: 'https://enterprise.saltstack.com/vman_downloads' # URL from which SaltStack Vulnerability Management content will be downloaded. (ENV Var: SSE_VMAN_CONTENT_URL)
+  ingest_on_boot: true                  # If True, SaltStack Vulnerability Management content will be downloaded and ingested soon after RAAS boot (ENV Var: SSE_VMAN_INGEST_ON_BOOT)
+  compile_stats_interval: 60            # Interval in seconds between times that the compile stats will be gathered. (ENV Var: SSE_VMAN_COMPILE_STATS_INTERVAL)
+  stats_snapshot_interval: 3600         # Interval in seconds between when stats for VMan will be gathered (ENV Var: SSE_VMAN_STATS_SNAPSHOT_INTERVAL)
   old_policy_file_lifespan: 2           # The lifespan of old policy files in days that will remain in the RAAS file system
   delete_old_policy_files_interval: 86400 # The interval in seconds between times that theold vman policy files in the RAAS file system will be deleted
-  download_frequency: 86400             # The frequency in seconds of automated SaltStack Vulnerability Management content downloads and ingestion. (ENV Var: SSE_VMAN_DOWNLOAD_FREQUENCY)
-  stats_snapshot_interval: 3600         # Interval in seconds between when stats for VMan will be gathered (ENV Var: SSE_VMAN_STATS_SNAPSHOT_INTERVAL)
-  download_enabled: true                # If True, SaltStack content downloading is enabled. (should be False for air gapped systems) (ENV Var: SSE_VMAN_DOWNLOAD_ENABLED)
-  vman_dir: vman                        # Location where SaltStack content in expanded before ingestion. If the path is relative (no leading slash), then it is relative to the RAAS cache dir (ENV Var: SSE_VMAN_DIR)
-  compile_stats_interval: 60            # Interval in seconds between times that the compile stats will be gathered. (ENV Var: SSE_VMAN_COMPILE_STATS_INTERVAL)

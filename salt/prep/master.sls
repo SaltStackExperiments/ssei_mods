@@ -35,6 +35,8 @@ reconfigure_raas:
     - user: raas
     - source: salt://prep/files/raas.txt
     - template: jinja
+    - context:
+      sse_eapi_ssl_enabled: False
 
 reconfigure_raas.conf:
   file.managed:
@@ -45,7 +47,7 @@ reconfigure_raas.conf:
 restart_master:
   cmd.run:
     - name: salt-call --local service.restart salt-master
-    - onchange_any:
+    - onchanges_any:
       - installer_git_GitPython
       - reconfigure_raas.conf
 
@@ -66,5 +68,3 @@ sync_minions:
     - onchanges_any:
       - pub_grain_py
       - configure_GitFS
-
-
