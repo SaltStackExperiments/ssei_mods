@@ -41,6 +41,12 @@ reconfigure_raas:
     - source: salt://prep/files/raas.txt
     - template: jinja
 
+restart_raas_if_necessary:
+  service.running:
+    - name: raas
+    - watch:
+      - reconfigure_raas
+
 sync_runnerside:
   cmd.run:
     - name: salt-run saltutil.sync_all
