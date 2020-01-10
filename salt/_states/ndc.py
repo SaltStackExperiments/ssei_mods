@@ -82,7 +82,7 @@ def record_exists(name, domain, record_type, elb_name):
                                        type=record_type,
                                        answer=answer)
             ret['result'] = True
-            ret['changes'] = {'old': record, 'new': record}
+            ret['changes'] = {'old': record, 'new': record.id}
         else:
             ret['result'] = 'None'
             ret['comment'] = 'would have created the record'
