@@ -16,6 +16,8 @@ change_root_password_x:
     - pillar:
         sse_eapi_server: 2020-ssei-toulouse-lab{{x}}.ssei.lx4.us
 
+{% endfor %}
+
 pip_packages:
   pip.installed:
     - name: pynamecom
