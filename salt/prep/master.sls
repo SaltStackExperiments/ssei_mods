@@ -1,12 +1,11 @@
 test_needs_several_pillars_check_pillar:
-  # keys to check existence(comma-separated): sseapi_server, sseapi_username, sseapi_password, sseapi_new_password
-  # value types to check for(comma-separated): 
+  # keys to check existence
   test.check_pillar:
     - present:
-      - sseapi_server
-      - sseapi_username
-      - sseapi_password
-      - sseapi_new_password
+      - sse_eapi_server
+      - sse_eapi_username
+      - sse_eapi_password
+      - sse_eapi_new_password
     - failhard: True
 
 
@@ -77,7 +76,7 @@ restart_raas_if_necessary:
 change_root_password:
   sse_user.password_set:
     - name: root
-    - password: {{ salt.pillar.get('sseapi_new_password') }}
+    - password: {{ salt.pillar.get('sse_eapi_new_password') }}
 
 sync_runnerside:
   cmd.run:
