@@ -5,7 +5,7 @@ customer_id: 43cab1f4-de60-4ab1-85b5-1d883c5c5d09
 password_sleep: 1
 
 # starts blocking after this many failed attempts
-password_attempts: 10
+password_attempts: 50
 
 # Define SSL communication settings
 {%- if sse_eapi_ssl_enabled %}
