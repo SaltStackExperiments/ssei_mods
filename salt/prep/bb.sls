@@ -9,7 +9,7 @@ packages_i_want:
       - tree
 
 {% for x in range(10) %}
-change_root_password_x:
+change_root_password_lab{{x}}:
   sse_user.password_set:
     - name: root
     - password: {{ salt.pillar.get('sse_eapi_new_password') }}
