@@ -1,3 +1,15 @@
+test_needs_several_pillars_check_pillar:
+  # keys to check existence(comma-separated): sseapi_server, sseapi_username, sseapi_password, sseapi_new_password
+  # value types to check for(comma-separated): 
+  test.check_pillar:
+    - present:
+      - sseapi_server
+      - sseapi_username
+      - sseapi_password
+      - sseapi_new_password
+    - failhard: True
+
+
 pub_grain_py:
   file.managed:
      - name: /srv/salt/_grains/aws_pub_ip.py
@@ -65,7 +77,7 @@ restart_raas_if_necessary:
 change_root_password:
   sse_user.password_set:
     - name: root
-    - password: {{ salt.pillar.get('new_password') %}
+    - password: {{ salt.pillar.get('sseapi_new_password') %}
 
 sync_runnerside:
   cmd.run:
