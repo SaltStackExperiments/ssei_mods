@@ -31,7 +31,8 @@ manage_vimrc:
 manage_etc_master_d_roots_conf:
   file.managed:
     - name: /etc/salt/master.d/roots.conf
-    - source: salt://prep/files/roots.conf - user: root
+    - source: salt://prep/files/roots.conf 
+    - user: root
 
 manage_cloud_profile:
   file.managed:
