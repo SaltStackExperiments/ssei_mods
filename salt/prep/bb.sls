@@ -1,3 +1,6 @@
+include:
+  - prep.gitfs
+
 packages_i_want:
   pkg.installed:
     - names:
