@@ -49,4 +49,3 @@ sync_minions:
     - bg: true
     - onchanges_any:
       - pub_grain_py
-      - configure_GitFS

@@ -33,4 +33,3 @@ restart_master:
     - name: salt-call --local service.restart salt-master
     - onchanges_any:
       - installer_git_GitPython
-
