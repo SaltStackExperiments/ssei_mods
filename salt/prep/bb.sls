@@ -8,17 +8,6 @@ packages_i_want:
       - vim
       - tree
 
-{% for x in range(10) %}
-change_root_password_lab{{x}}:
-  sse_user.password_set:
-    - name: root
-    - password: {{ salt.pillar.get('sse_eapi_new_password') }}
-    - force: True
-    - pillar:
-        sse_eapi_server: 2020-ssei-toulouse-lab{{x}}.ssei.lx4.us
-
-{% endfor %}
-
 pip_packages:
   pip.installed:
     - name: pynamecom
