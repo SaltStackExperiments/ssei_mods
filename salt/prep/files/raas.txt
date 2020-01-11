@@ -1,6 +1,12 @@
 # The customer_id sets up the unique namespace in the database
 customer_id: 43cab1f4-de60-4ab1-85b5-1d883c5c5d09
 
+# sleeps this many seconds in between password attempts
+password_sleep: 1
+
+# starts blocking after this many failed attempts
+password_attempts: 10
+
 # Define SSL communication settings
 {%- if sse_eapi_ssl_enabled %}
 tls_minimum: 1.2
