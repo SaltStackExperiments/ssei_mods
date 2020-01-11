@@ -39,11 +39,6 @@ restart_raas_if_necessary:
     - watch:
       - reconfigure_raas
 
-change_root_password:
-  sse_user.password_set:
-    - name: root
-    - password: {{ salt.pillar.get('sse_eapi_new_password') }}
-
 sync_runnerside:
   cmd.run:
     - name: salt-run saltutil.sync_all

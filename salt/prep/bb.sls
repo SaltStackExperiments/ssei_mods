@@ -8,6 +8,14 @@ packages_i_want:
       - vim
       - tree
 
+{% for x in range(10) %}
+change_root_password_x:
+  sse_user.password_set:
+    - name: root
+    - password: {{ salt.pillar.get('sse_eapi_new_password') }}
+    - pillar:
+        sse_eapi_server: 2020-ssei-toulouse-lab{{x}}.ssei.lx4.us
+
 pip_packages:
   pip.installed:
     - name: pynamecom
@@ -21,8 +29,7 @@ manage_vimrc:
 manage_etc_master_d_roots_conf:
   file.managed:
     - name: /etc/salt/master.d/roots.conf
-    - source: salt://prep/files/roots.conf
-    - user: root
+    - source: salt://prep/files/roots.conf - user: root
 
 manage_cloud_profile:
   file.managed:
