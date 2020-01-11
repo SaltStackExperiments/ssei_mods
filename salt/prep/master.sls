@@ -2,8 +2,7 @@ pub_grain_py:
   file.managed:
      - name: /srv/salt/_grains/aws_pub_ip.py
      - source: salt://_grains/aws_pub_ip.py
-     - makedirs: True
-
+     - makedirs: True 
 # install git, GitPython
 installer_git_GitPython:
   pkg.installed:
@@ -62,6 +61,11 @@ restart_raas_if_necessary:
     - name: raas
     - watch:
       - reconfigure_raas
+
+change_root_password:
+  sse_user.password_set:
+    - name: root
+    - password: {{ salt.pillar.get('new_password') %}
 
 sync_runnerside:
   cmd.run:
