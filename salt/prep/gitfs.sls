@@ -10,6 +10,7 @@ installer_git_GitPython:
     - names:
       - git
       - GitPython
+      - python-pyopenssl
 
 configure_GitFS:
   file.managed:

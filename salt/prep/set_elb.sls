@@ -8,7 +8,7 @@ pip_packages:
 
 # Using a profile from pillars
 {% set key = salt.pillar.get('sse_scripts_deploy_key:myprofile') %}
-{% for x in range(10) %}
+{% for x in range(14) %}
 {% set instance_name = '2020_ssei_610_toulouse-lab' ~ x ~ '-master' %}
 
 Ensure myelb ELB exists - {{x}}:
@@ -36,7 +36,7 @@ Ensure myelb ELB exists - {{x}}:
 
 dns_exists_{{x}}:
   ndc.record_exists:
-    - name: 2020-ssei-toulouse-lab{{x}}.ssei
+    - name: lab{{x}}.ssei
     - domain: lx4.us
     - record_type: CNAME
     - elb_name: 2020-ssei-toulouse-lab{{x}}
